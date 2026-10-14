@@ -1,8 +1,8 @@
 dados_inscritos = []
 
-#Menu de inscrição
+#Função Menu de inscrição
 def menu_inscrição():
-    print("-------------------- Menu de Inscrição --------------------")
+    print("-------------------- Menu Principal --------------------")
     print("\n1. Inscrever participante")
     print("2. Calcular resultado")
     print("3. Sair")
@@ -22,6 +22,15 @@ def calcular_categoria(idade):
     else:
         return "Idade inválida"
 
+#Função para o código do corredor 
+def codigo_corredor(nome_completo, idade): 
+    partes_do_nome = nome_completo.split().strip() 
+    primeiro_nome = partes_do_nome[0]
+    ultimo_nome = partes_do_nome[-1]
+    codigo_nome = primeiro_nome[:3].upper()
+    codigo_ultimo_nome = ultimo_nome[:3].upper()
+    return f"{codigo_nome}{codigo_ultimo_nome}{idade}"
+
 #Loop principal do menu de inscrição
 while True:
     opcao = menu_inscrição()
@@ -29,8 +38,9 @@ while True:
 #Criação da inscrição do participante
     #Validação da idade do participante
     if opcao == "1":
+        print("\n-------------------- Inscrição do Participante --------------------")
         try:
-            idade = int(input("Digite a idade do participante: "))
+            idade = int(input("\nDigite a idade do participante: "))
         except ValueError:
             print("Idade inválida. Digite um número inteiro.")
             continue
@@ -38,7 +48,8 @@ while True:
             print("Desculpe, a idade mínima para participar da corrida é de 16 anos.")
             continue
 
-        nome = input("Digite o nome completo do participante: ").strip()
+        #Validação do nome do participante 
+        nome_completo = input("Digite o nome completo do participante: ").upper()
 
         #Validação da distância da corrida
         distancia = input("Digite a distância da corrida (5km ou 10km): ").strip().lower()
@@ -63,19 +74,28 @@ while True:
             else:
                 print("Lote inválido. Digite 1° lote ou 2° lote.")
 
-        #Armazenamento dos dados do participante
+        #Armazenamento dos dados do participante na lista de inscritos
         participante = {
-            "nome": nome,
+            "nome": nome_completo,
             "idade": idade,
             "distancia": distancia,
-            "lote": lote}
+            "lote": lote,
+            "codigo" : codigo_corredor(nome_completo, idade)
+            }
 
         dados_inscritos.append(participante)
-        print("Participante inscrito com sucesso!")
 
-    #Listagem dos participantes inscritos
-    elif opcao == "2":
-        
+        #Comprovante de inscrição
+        print("\n-------------------- Comprovante de Inscrição --------------------")
+        print(f"Nome: {primeiro_nome}")
+        print(f"Idade: {idade}")
+        print(f"Código do Corredor: {codigo_corredor(nome_completo, idade)}")
+        print(f"Categoria: {calcular_cagetoria(idade)}")
+        print(f"Distância: {distancia}")
+        print(f"Valor a pagar: R$ {80.00 if lote == "1° lote" else 100.00}")
+
+    #Cálculo do resultado da corrida
+    
     #Saída do sistema
     elif opcao == "3":
         print("Saindo do sistema...")
