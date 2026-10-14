@@ -1,0 +1,73 @@
+Histórico de desenvolvimento
+
+O sistema foi desenvolvido de forma incremental, com cada versão adicionando ou aprimorando funcionalidades do programa.
+O histórico abaixo registra a evolução da estrutura inicial até a versão atual.
+
+🟢 corrida-0.1 — Estrutura inicial do menu
+
+Objetivo: criar a estrutura principal de navegação do sistema.
+
+Desenvolvimento:
+-Criação do menu principal.
+-Implementação das opções de inscrição, cálculo de resultado e saída.
+-Utilização de uma estrutura de repetição para manter o menu ativo até o usuário escolher sair.
+
+Conceitos aplicados:
+
+-print() e input().
+-Variáveis.
+-Estrutura condicional if/elif/else.
+-Laço de repetição while.
+
+🟢 corrida-0.2 — Cadastro e entrada de dados
+
+Objetivo: implementar a coleta das informações necessárias para a inscrição dos participantes.
+
+Desenvolvimento:
+-Solicitação do nome completo.
+-Solicitação da idade do participante.
+-Seleção da distância da corrida: 5 km ou 10 km.
+-Seleção do lote de inscrição.
+-Definição dos valores-base de cada lote: R$ 80,00 e R$ 100,00.
+
+Conceitos aplicados:
+-Entrada e conversão de dados.
+-Manipulação de strings.
+-Variáveis e atribuição de valores.
+-Estruturas condicionais.
+
+🟢 corrida-0.3 — Validações e regras de inscrição
+
+Objetivo: impedir inscrições com dados inválidos e aplicar as primeiras regras de negócio.
+
+Desenvolvimento:
+-Validação da idade mínima de 16 anos.
+-Tratamento de entradas inválidas para a idade.
+-Validação da distância informada.
+-Validação do lote selecionado.
+-Utilização de mensagens para orientar o usuário durante o cadastro.
+-Conceitos aplicados:
+-try/except.
+-ValueError.
+-Operadores relacionais e lógicos.
+-continue para interromper uma tentativa inválida e retornar ao fluxo do menu ou cadastro.
+
+🟢 corrida-0.4 — Funções e organização do código
+
+Objetivo: separar responsabilidades e reduzir a repetição de código.
+
+Desenvolvimento:
+-Criação da função menu_inscrição() para exibir o menu e retornar a opção escolhida.
+-Criação da função calcular_categoria(idade) para classificar os participantes.
+-Criação da função codigo_corredor(nome_completo, idade) para gerar o código identificador.
+-Definição das categorias por faixa etária:
+-Juvenil: 16 a 19 anos.
+-Adulto: 20 a 39 anos.
+-Master: 40 a 59 anos.
+-Veterano: 60 anos ou mais.
+
+Conceitos aplicados:
+-Definição de funções com def.
+-Parâmetros e argumentos.
+-Retorno de valores com return.
+-Manipulação de strings com split() e upper().
