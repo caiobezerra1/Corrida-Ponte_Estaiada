@@ -142,6 +142,7 @@ while True:
 
         #Validação da distância da corrida
         distancia = input("Digite a distância da corrida que deseja participar(5km ou 10km): ").strip().lower()
+        
         if distancia == "5":
             distancia = "5km"
         elif distancia == "10":
@@ -154,6 +155,7 @@ while True:
         #Validação do lote do participante
         while True:
             lote = input("Digite o lote que deseja (1° lote - R$ 80,00 / 2° lote - R$ 100,00): ").strip()
+
             if lote == "1":
                 lote_texto = "1° lote"
                 valor = 80.00
@@ -192,13 +194,13 @@ while True:
         print(f"Código do Corredor: {codigo}")
         print(f"Categoria: {categoria}")
         print(f"Distância: {distancia}")
-        print(f"Valor a pagar: R$ {valor:.2f}")
+        print(f"Valor a pagar: R$ {calcular_valor_inscricao(lote, distancia, idade):}")
 
     #Cálculo do resultado da corrida
     elif opcao == "2":
         print("\n-------------------- Resultado da Corrida --------------------")
         try:
-            idade = int(input("Digite a idade do participante"))
+            idade = int(input("Digite a idade do participante: "))
         except ValueError:
             print("Idade Inválida. Digite um número inteiro")
             continue 
@@ -206,7 +208,7 @@ while True:
         if idade < 16:
             print("A idade mínima para participar é de 16 anos.")
             continue
-        distancia = input("Digite a distância (5km ou 10km): ").strip().lower
+        distancia = input("Digite a distância (5km ou 10km): ").strip().lower()
 
         if distancia == "5":
             distancia = "5km"
@@ -242,3 +244,5 @@ while True:
 
     else:
         print("Opção inválida. Escolha 1, 2 ou 3.")
+
+        
