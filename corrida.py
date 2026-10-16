@@ -3,9 +3,12 @@ dados_inscritos = []
 #Função Menu de inscrição
 def menu_inscrição():
     print("-------------------- Menu Principal --------------------")
-    print("\n1. Inscrever participante")
-    print("2. Calcular resultado")
-    print("3. Sair")
+    print("\n1. Cadastrar corredor")
+    print("2. Listar inscritos")
+    print("3. Buscar corredor pelo código")
+    print("4. Registrar tempo de prova")
+    print("5. Sair")
+
     opcao = input("\nEscolha uma opção: ").strip()
     return opcao
 
@@ -116,6 +119,38 @@ def calcular_resumo(inscritos):
 
     return quantidade, arrecadacao
 
+# Função para buscar corredor pelo código
+def buscar_corredor(codigo):
+    for participante in dados_inscritos:
+        if participante["codigo"] == codigo:
+            return participante
+
+    return None
+
+
+# Função para listar os inscritos
+def listar_inscritos():
+    if not dados_inscritos:
+        print("Não existem corredores inscritos.")
+        return
+
+    for participante in dados_inscritos:
+        print("\n-------------------- Corredor --------------------")
+        print(f"Nome: {participante['nome']}")
+        print(f"Código: {participante['codigo']}")
+        print(f"Idade: {participante['idade']}")
+        print(f"Categoria: {participante['categoria']}")
+        print(f"Distância: {participante['distancia']}")
+        print(f"Tempo: {participante['tempo']}")
+
+#Função para procurar corredor
+    def buscar_corredor(codigo):
+     for participante in dados_inscritos:
+        if participante["codigo"] == codigo:
+            return participante
+
+    return None
+
 #Loop principal do menu de inscrição
 while True:
     opcao = menu_inscrição()
@@ -156,16 +191,20 @@ while True:
         while True:
             lote = input("Digite o lote que deseja (1° lote - R$ 80,00 / 2° lote - R$ 100,00): ").strip()
 
+
             if lote == "1":
                 lote_texto = "1° lote"
-                valor = 80.00
-                break
             elif lote == "2":
                 lote_texto = "2° lote"
-                valor = 100.00
-                break
             else:
-                print("Lote inválido. Digite 1° lote ou 2° lote.")
+                print("Lote inválido. Digite 1 ou 2.")
+                continue
+
+            try:
+                valor = calcular_valor_inscricao(lote, distancia, idade)
+                break
+            except ValueError as e:
+                print(e)
             
             #Calculo para o valor final da inscrição
             valor = calcular_valor_inscricao(lote, distancia, idade)
@@ -183,8 +222,10 @@ while True:
             "lote": lote_texto,
             "codigo" : codigo,
             "categoria" : categoria,
-            "valor": valor 
-            }
+            "valor": valor,
+            "tempo": None
+             
+          }
         dados_inscritos.append(participante)
 
         #Comprovante de inscrição
@@ -196,53 +237,63 @@ while True:
         print(f"Distância: {distancia}")
         print(f"Valor a pagar: R$ {calcular_valor_inscricao(lote, distancia, idade):}")
 
-    #Cálculo do resultado da corrida
+  # Listar inscritos
     elif opcao == "2":
-        print("\n-------------------- Resultado da Corrida --------------------")
-        try:
-            idade = int(input("Digite a idade do participante: "))
-        except ValueError:
-            print("Idade Inválida. Digite um número inteiro")
-            continue 
+        listar_inscritos()
 
-        if idade < 16:
-            print("A idade mínima para participar é de 16 anos.")
+    # Buscar corredor pelo código
+    elif opcao == "3":
+        codigo = input("Digite o código do corredor: ").strip().upper()
+        participante = buscar_corredor(codigo)
+
+        if participante is None:
+            print("Corredor não encontrado. Verifique o código informado.")
             continue
-        distancia = input("Digite a distância (5km ou 10km): ").strip().lower()
 
-        if distancia == "5":
-            distancia = "5km"
-        elif distancia == "10":
-            distancia = "10km"
+        print(f"Nome: {participante['nome']}")
+        print(f"Código: {participante['codigo']}")
+        print(f"Categoria: {participante['categoria']}")
+        print(f"Tempo: {participante['tempo']}")
 
-        if distancia not in ["5km", "10km"]:
-            print("Distância inválida.")
+    # Registrar tempo de prova
+    elif opcao == "4":
+        codigo = input("Digite o código do corredor: ").strip().upper()
+        participante = buscar_corredor(codigo)
+
+        if participante is None:
+            print("Corredor não encontrado. Verifique o código informado.")
             continue
+
         tempo = input("Digite o tempo da prova (HH:MM:SS): ").strip()
+
         try:
             segundos = tempo_em_segundos(tempo)
         except ValueError as erro:
             print(erro)
             continue
 
-        categoria = calcular_categoria(idade)
-        pace = calcular_pace(segundos, distancia)
-        premiado = verificar_premiacao(idade, distancia, segundos)
+        participante["tempo"] = tempo
 
-        print(f"\nCategoria: {categoria}")
+        pace = calcular_pace(segundos, participante["distancia"])
+        premiado = verificar_premiacao(
+            participante["idade"],
+            participante["distancia"],
+            segundos
+        )
+
+        print(f"Tempo: {tempo}")
         print(f"Tempo em segundos: {segundos}")
         print(f"Pace: {pace}")
+
         if premiado:
             print("O corredor atingiu o tempo para premiação!")
         else:
             print("O corredor não atingiu o tempo para premiação.")
-    
-    #Saída do sistema
-    elif opcao == "3":
+
+    # Sair do sistema
+    elif opcao == "5":
         print("Saindo do sistema...Até logo!")
         break
 
     else:
-        print("Opção inválida. Escolha 1, 2 ou 3.")
-
-        
+        print("Opção inválida. Escolha uma opção de 1 a 5.")
