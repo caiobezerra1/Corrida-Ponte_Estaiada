@@ -1,5 +1,18 @@
 dados_inscritos = []
 
+codigos_usados = set()
+
+tempos_limite = (
+    ("Juvenil", "5km", "00:25:00"),
+    ("Juvenil", "10km", "00:52:00"),
+    ("Adulto", "5km", "00:22:00"),
+    ("Adulto", "10km", "00:46:00"),
+    ("Master", "5km", "00:25:00"),
+    ("Master", "10km", "00:52:00"),
+    ("Veterano", "5km", "00:30:00"),
+    ("Veterano", "10km", "01:03:00")
+)
+
 #Função Menu de inscrição
 def menu_inscrição():
     print("-------------------- Menu Principal --------------------")
@@ -7,7 +20,9 @@ def menu_inscrição():
     print("2. Listar inscritos")
     print("3. Buscar corredor pelo código")
     print("4. Registrar tempo de prova")
-    print("5. Sair")
+    print("5. Contar inscritos por categoria")
+    print("6. Mostrar resumo dos tempos")
+    print("7. Sair")
 
     opcao = input("\nEscolha uma opção: ").strip()
     return opcao
@@ -76,15 +91,13 @@ def tempo_em_segundos(tempo):
 #Função para verificar se o corredor foi premiado 
 def verificar_premiacao(idade, distancia, tempo_segundos):
     categoria = calcular_categoria(idade)
-    limites = {
-        "Juvenil": {"5km": "00:25:00", "10km": "00:52:00"},
-        "Adulto": {"5km": "00:22:00", "10km": "00:46:00"},
-        "Master": {"5km": "00:25:00", "10km": "00:52:00"},
-        "Veterano": {"5km": "00:30:00", "10km": "01:03:00"}
-    }
 
-    tempo_limite = tempo_em_segundos(limites[categoria][distancia])
-    return tempo_segundos <= tempo_limite
+    for cat, dist, tempo in tempos_limite:
+        if cat == categoria and dist == distancia:
+            limite = tempo_em_segundos(tempo)
+            return tempo_segundos <= limite
+
+    return False
 
 #Função para calcular o Pace
 def calcular_pace(tempo_segundos, distancia):
@@ -151,6 +164,48 @@ def listar_inscritos():
 
     return None
 
+# Função para contar inscritos por categoria
+def contar_por_categoria():
+    categorias = {
+        "Juvenil": 0,
+        "Adulto": 0,
+        "Master": 0,
+        "Veterano": 0
+    }
+
+    for participante in dados_inscritos:
+        categoria = participante["categoria"]
+        categorias[categoria] += 1
+
+    print("\n-------------------- Inscritos por categoria --------------------")
+    for categoria, quantidade in categorias.items():
+        print(f"{categoria}: {quantidade}")
+
+        # Função para mostrar corredores com tempo e premiados
+def mostrar_resumo_tempos():
+    corredores_com_tempo = [
+        p for p in dados_inscritos
+        if p["tempo"] is not None
+    ]
+
+    corredores_premiados = [
+        p for p in dados_inscritos
+        if p["tempo"] is not None
+        and verificar_premiacao(
+            p["idade"],
+            p["distancia"],
+            tempo_em_segundos(p["tempo"])
+        )
+    ]
+
+    print("\n-------------------- Corredores com tempo registrado --------------------")
+    for p in corredores_com_tempo:
+        print(p["nome"], "-", p["tempo"])
+
+    print("\n-------------------- Corredores premiados --------------------")
+    for p in corredores_premiados:
+        print(p["nome"], "-", p["categoria"])
+
 #Loop principal do menu de inscrição
 while True:
     opcao = menu_inscrição()
@@ -191,7 +246,6 @@ while True:
         while True:
             lote = input("Digite o lote que deseja (1° lote - R$ 80,00 / 2° lote - R$ 100,00): ").strip()
 
-
             if lote == "1":
                 lote_texto = "1° lote"
             elif lote == "2":
@@ -206,11 +260,23 @@ while True:
             except ValueError as e:
                 print(e)
             
-            #Calculo para o valor final da inscrição
+            #Cálculo para o valor final da inscrição
             valor = calcular_valor_inscricao(lote, distancia, idade)
 
         #Armazenamento dos dados do participante na lista de inscritos
         codigo = codigo_corredor(nome_completo, idade)
+
+        if codigo is None:
+            continue
+
+        codigo_base = codigo
+        contador = 1
+
+        while codigo in codigos_usados:
+            codigo = f"{codigo_base}{contador:02d}"
+            contador += 1
+
+        codigos_usados.add(codigo)
         
         categoria = calcular_categoria(idade)
         primeiro_nome = nome_completo.split()[0]
@@ -290,10 +356,20 @@ while True:
         else:
             print("O corredor não atingiu o tempo para premiação.")
 
-    # Sair do sistema
+   
+        #Contar inscritos por categoria
     elif opcao == "5":
+        contar_por_categoria()
+
+
+    #Mostrar resumo dos tempos
+    elif opcao == "6":
+        mostrar_resumo_tempos()
+
+    #Sair do sistema
+    elif opcao == "7":
         print("Saindo do sistema...Até logo!")
         break
 
     else:
-        print("Opção inválida. Escolha uma opção de 1 a 5.")
+        print("Opção inválida. Escolha uma opção de 1 a 7.")
