@@ -281,7 +281,7 @@ def relatorio_final():
         print(f"Corredor mais rápido: {mais_rapido['nome']}")
         print(f"Tempo do mais rápido: {mais_rapido['tempo']}")
 
-    print("\n========== FIM DO RELATÓRIO ==========")
+    print("\n-------------------- FIM DO RELATÓRIO --------------------")
 
 #Loop principal do menu de inscrição
 while True:
