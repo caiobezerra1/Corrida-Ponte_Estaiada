@@ -26,13 +26,16 @@ def menu_inscrição():
     print("4. Registrar tempo de prova")
     print("5. Contar inscritos por categoria")
     print("6. Mostrar resumo dos tempos")
-    print("7. Sair")
+    print("7. Mostrar classificação geral")
+    print("8. Mostrar pódio por categoria")
+    print("9. Sair")
 
     opcao = input("\nEscolha uma opção: ").strip()
     return opcao
 
 #Função para calcular categoria do participante com base na idade
 def calcular_categoria(idade):
+    """Retorna a categoria do corredor a partir da idade."""
     if 16 <= idade <= 19:
         return "Juvenil"
     elif 20 <= idade <= 39: 
@@ -60,6 +63,7 @@ def codigo_corredor(nome_completo, idade):
 
 # Função para calcular o valor da inscrição
 def calcular_valor_inscricao(lote, distancia, idade):
+    """Calcula o valor da inscrição pelo lote, distância e idade (meia-inscrição a partir de 60)."""
     if lote == "1":
         valor = 80.00
     elif lote == "2":
@@ -93,6 +97,7 @@ def tempo_em_segundos(tempo):
 
 #Função para verificar se o corredor foi premiado 
 def verificar_premiacao(idade, distancia, tempo_segundos):
+    """Retorna True se o tempo é menor ou igual ao limite da categoria na distância."""
     categoria = calcular_categoria(idade)
 
     for cat, dist, tempo in tempos_limite:
@@ -152,10 +157,10 @@ def listar_inscritos():
         print(f"Tempo: {participante['tempo']}")
 
 #Função para procurar corredor
-    def buscar_corredor(codigo):
-        for participante in dados_inscritos:
-            if participante["codigo"] == codigo:
-                return participante
+def buscar_corredor(codigo):
+    for participante in dados_inscritos:
+        if participante["codigo"] == codigo:
+            return participante
     return None
 
 # Função para contar inscritos por categoria
@@ -259,18 +264,24 @@ def relatorio_final():
         if not corredores:
             print("Nenhum tempo registrado para esta distância.")
             continue
+
         tempos = [
             tempo_em_segundos(p["tempo"])
-            for p in corredores]
-        media = sum(tempos) // len(tempos)
+            for p in corredores
+        ]
 
-        mais_rapido = min(corredores,key=lambda p: tempo_em_segundos(p["tempo"]))
+        media = round(sum(tempos) / len(tempos))
+        
+        mais_rapido = min(
+            corredores,
+            key=lambda p: tempo_em_segundos(p["tempo"])
+        )
 
         print(f"Tempo médio: {formatar_tempo(media)}")
         print(f"Corredor mais rápido: {mais_rapido['nome']}")
         print(f"Tempo do mais rápido: {mais_rapido['tempo']}")
 
-        print("\n========== FIM DO RELATÓRIO ==========")
+    print("\n-------------------- FIM DO RELATÓRIO --------------------")
 
 #Loop principal do menu de inscrição
 while True:
@@ -421,14 +432,24 @@ while True:
     elif opcao == "5":
         contar_por_categoria()
 
-    #Mostrar resumo dos tempos
+
+   # Mostrar resumo dos tempos
     elif opcao == "6":
         mostrar_resumo_tempos()
 
-    #Sair do sistema
+    # Mostrar classificação geral
     elif opcao == "7":
-        print("Saindo do sistema...Até logo!")
+        mostrar_classificacao()
+
+    # Mostrar pódio por categoria
+    elif opcao == "8":
+        mostrar_podio()
+
+    # Sair do sistema
+    elif opcao == "9":
+        relatorio_final()
+        print("Saindo do sistema... Até logo!")
         break
 
     else:
-        print("Opção inválida. Escolha uma opção de 1 a 7.")
+        print("Opção inválida. Escolha uma opção de 1 a 9.")
